@@ -3,6 +3,7 @@ import sqlparse
 import streamlit as st
 
 URL = st.secrets["URL"]
+API_KEY = st.secrets["API_KEY"]  # Add this line to retrieve your API key
 
 st.title("BeAware.Text2SQL")
 
@@ -12,7 +13,10 @@ if user_input:
     response = requests.get(
         f"{URL}/api/v1/translate-to-sql",
         params={"question": user_input},
-        headers={"accept": "application/json"},
+        headers={
+            "accept": "application/json",
+            "X-API-KEY": API_KEY,  # Include the API key in the headers
+        },
     )
     if response.status_code == 200:
         # Extract SQL query and read-only flag
@@ -30,7 +34,7 @@ if user_input:
         if process_time:
             st.write(f"**Execution Time:** {float(process_time):.4f} seconds")
 
-        # Display a status button for read-only
+        # Display a status indicator for read-only
         if read_only:
             st.success("🔒 Read-Only Query")
         else:
